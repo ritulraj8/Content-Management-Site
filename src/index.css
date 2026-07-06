@@ -1,0 +1,95 @@
+@import url('https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400..700;1,400..700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
+@import "tailwindcss";
+
+@variant dark (&:where(.dark, .dark *));
+
+@theme {
+  --font-serif: 'Lora', Georgia, Cambria, "Times New Roman", Times, serif;
+  --font-sans: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+  
+  --color-editorial-cream: #FDFBF7;
+  --color-editorial-paper: #FAF6F0;
+  --color-editorial-ink: #111111;
+  --color-editorial-charcoal: #1C1D21;
+  --color-editorial-gold: #C5A059;
+  --color-editorial-gold-dark: #A47E3B;
+  --color-editorial-gold-light: #DFCDA8;
+  --color-editorial-sage: #5A6B5C;
+  --color-editorial-card-dark: #1E2024;
+  --color-editorial-bg-dark: #121316;
+}
+
+/* Base custom styles for premium editorial feel */
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-feature-settings: "kern" 1, "liga" 1;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.light ::-webkit-scrollbar-thumb {
+  background: #E5E5E0;
+  border-radius: 4px;
+}
+
+.light ::-webkit-scrollbar-thumb:hover {
+  background: #D4D4CE;
+}
+
+.dark ::-webkit-scrollbar-thumb {
+  background: #2E3036;
+  border-radius: 4px;
+}
+
+.dark ::-webkit-scrollbar-thumb:hover {
+  background: #3E4149;
+}
+
+/* Dropcap utility */
+.dropcap::first-letter {
+  float: left;
+  font-family: var(--font-serif);
+  font-size: 4.8rem;
+  line-height: 0.85;
+  padding-top: 4px;
+  padding-right: 8px;
+  padding-left: 3px;
+  font-weight: 700;
+  color: var(--color-editorial-gold-dark);
+}
+.dark .dropcap::first-letter {
+  color: var(--color-editorial-gold-light);
+}
+
+/* Hide scrollbars but keep functionality */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* Accordion expand transition */
+.faq-content {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.4s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.3s ease;
+  opacity: 0;
+}
+
+.faq-content.open {
+  max-height: 500px;
+  opacity: 1;
+}
