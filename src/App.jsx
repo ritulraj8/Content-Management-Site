@@ -4,7 +4,7 @@ import ArticleCard from './components/ArticleCard';
 import ArticleView from './components/ArticleView';
 import AdminLogin from './components/AdminLogin';
 import ArticleEditor from './components/ArticleEditor';
-import FaqSection from './components/FaqSection';
+import FaqSection, { bustFaqCache } from './components/FaqSection';
 import { Sparkles, X, Plus, Loader2, Edit2, Trash2, ArrowRight } from 'lucide-react';
 import './App.css';
 
@@ -99,6 +99,7 @@ function App() {
         setView('explore');
       }
       fetchArticles();
+      bustFaqCache(); // Invalidate FAQs so they update on next view
     } catch (err) {
       alert('An error occurred while deleting the article.');
     }
@@ -125,6 +126,7 @@ function App() {
   const handleSaveSuccess = (savedArticle) => {
     // Refresh the article collection
     fetchArticles();
+    bustFaqCache(); // Invalidate FAQs so they update on next view
 
     if (savedArticle === null) {
       // Meaning article was deleted

@@ -4,7 +4,7 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "concurrently \"node server.js\" \"vite\"",
+    "dev": "concurrently --names \"express,django,vite\" --prefix-colors \"blue,green,cyan\" \"node server.js\" \"/Users/gigir/Desktop/cms/cms/bin/python /Users/gigir/Desktop/cms/django_faq/manage.py runserver 8000 --noreload --settings=django_faq.settings\" \"vite\"",
     "server": "node server.js",
     "build": "vite build",
     "lint": "oxlint",

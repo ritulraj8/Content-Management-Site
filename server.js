@@ -6,6 +6,7 @@ import crypto from 'crypto';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import bcrypt from 'bcryptjs';
+import http from 'http';
 
 
 dotenv.config();
@@ -199,6 +200,33 @@ app.delete('/api/articles/:id', adminAuth, async (req, res) => {
     console.error('DELETE /api/articles/:id failed:', err);
     res.status(500).json({ error: 'Failed to delete article' });
   }
+});
+
+// Proxy /python-api/* → Django FAQ server (port 8000)
+app.use('/python-api', (req, res) => {
+  const djangoPath = req.url; // path after /python-api
+  const options = {
+    hostname: '127.0.0.1',
+    port: 8000,
+    path: djangoPath,
+    method: req.method,
+    headers: {
+      ...req.headers,
+      host: '127.0.0.1:8000',
+    },
+  };
+
+  const proxy = http.request(options, (djangoRes) => {
+    res.writeHead(djangoRes.statusCode, djangoRes.headers);
+    djangoRes.pipe(res, { end: true });
+  });
+
+  proxy.on('error', (err) => {
+    console.error('Django proxy error:', err.message);
+    res.status(502).json({ error: 'FAQ service unavailable. Make sure the Django server is running on port 8000.' });
+  });
+
+  req.pipe(proxy, { end: true });
 });
 
 // Serve frontend assets in production build

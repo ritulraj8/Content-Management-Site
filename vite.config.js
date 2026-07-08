@@ -7,11 +7,22 @@ export default defineConfig({
   plugins: [react(), tailwindcss()],
   server: {
     proxy: {
+      // Node/Express API (articles, auth)
       '/api': {
         target: 'http://localhost:3001',
         changeOrigin: true,
         secure: false,
-      }
+      },
+      // Django Python API (LLM-powered FAQ generation)
+      '/python-api': {
+        target: 'http://localhost:8000',
+        changeOrigin: true,
+        secure: false,
+        rewrite: (path) => path.replace(/^\/python-api/, ''),
+      },
+    },
+    watch: {
+      ignored: ['**/django_faq/**', '**/*.sqlite3', '**/*.sqlite3-*'],
     }
   }
 })
