@@ -223,10 +223,20 @@ app.use('/python-api', (req, res) => {
 
   proxy.on('error', (err) => {
     console.error('Django proxy error:', err.message);
-    res.status(502).json({ error: 'FAQ service unavailable. Make sure the Django server is running on port 8000.' });
+    if (!res.headersSent) {
+      res.status(502).json({ error: 'FAQ service unavailable. Make sure the Django server is running on port 8000.' });
+    }
   });
 
-  req.pipe(proxy, { end: true });
+  // Since express.json() already consumed the request stream, we must write the body manually
+  if (req.body && Object.keys(req.body).length > 0) {
+    const bodyData = JSON.stringify(req.body);
+    proxy.setHeader('Content-Type', 'application/json');
+    proxy.setHeader('Content-Length', Buffer.byteLength(bodyData));
+    proxy.write(bodyData);
+  }
+  
+  proxy.end();
 });
 
 // Serve frontend assets in production build
