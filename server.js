@@ -1,7 +1,8 @@
 import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
-import { Pool } from '@neondatabase/serverless';
+import { Pool, neonConfig } from '@neondatabase/serverless';
+import ws from 'ws';
 import crypto from 'crypto';
 import path from 'path';
 import { fileURLToPath } from 'url';
@@ -23,6 +24,9 @@ if (!process.env.DATABASE_URL) {
   console.error('CRITICAL: DATABASE_URL is not set in environment variables!');
   process.exit(1);
 }
+
+// Polyfill WebSockets for the Neon Pool in Node.js environments
+neonConfig.webSocketConstructor = ws;
 
 const sql = new Pool({ connectionString: process.env.DATABASE_URL });
 
