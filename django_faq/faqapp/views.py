@@ -50,12 +50,14 @@ def _compute_hash(title: str, content: str) -> str:
 
 def _fetch_articles_from_express():
     """
-    Fetch all articles from the Express/Node API at localhost:3001.
+    Fetch all articles from the Express/Node API at localhost:PORT.
     This avoids needing psycopg2 — reuses the already-running Express server.
     Returns a list of dicts: [{id, title, content, author_name}, ...]
     """
     import urllib.request
-    url = 'http://127.0.0.1:3001/api/articles'
+    import os
+    port = os.environ.get('PORT', '3001')
+    url = f'http://127.0.0.1:{port}/api/articles'
     req = urllib.request.Request(url, headers={'Accept': 'application/json'})
     with urllib.request.urlopen(req, timeout=10) as response:
         data = json.loads(response.read().decode('utf-8'))
