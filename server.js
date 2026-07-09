@@ -96,7 +96,7 @@ app.post('/api/login', async (req, res) => {
     }
 
     // Query case-sensitive "User" table in PostgreSQL by email
-    const users = await sql.query('SELECT * FROM "User" WHERE email = $1', [email]);
+    const { rows: users } = await sql.query('SELECT * FROM "User" WHERE email = $1', [email]);
     
     if (users.length > 0) {
       const user = users[0];
@@ -128,7 +128,7 @@ app.post('/api/login', async (req, res) => {
 // 2. GET all articles
 app.get('/api/articles', async (req, res) => {
   try {
-    const data = await sql.query('SELECT * FROM articles ORDER BY created_date DESC');
+    const { rows: data } = await sql.query('SELECT * FROM articles ORDER BY created_date DESC');
     res.json(data);
   } catch (err) {
     console.error('GET /api/articles failed:', err);
@@ -140,7 +140,7 @@ app.get('/api/articles', async (req, res) => {
 app.get('/api/articles/:id', async (req, res) => {
   try {
     const { id } = req.params;
-    const data = await sql.query('SELECT * FROM articles WHERE id = $1', [id]);
+    const { rows: data } = await sql.query('SELECT * FROM articles WHERE id = $1', [id]);
     if (data.length === 0) {
       return res.status(404).json({ error: 'Article not found' });
     }
@@ -158,7 +158,7 @@ app.post('/api/articles', adminAuth, async (req, res) => {
     if (!title || !content || !author_name) {
       return res.status(400).json({ error: 'Missing title, content, or author_name' });
     }
-    const data = await sql.query(
+    const { rows: data } = await sql.query(
       'INSERT INTO articles (title, content, author_name, created_date, modified_date) VALUES ($1, $2, $3, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP) RETURNING *',
       [title, content, author_name]
     );
@@ -177,7 +177,7 @@ app.put('/api/articles/:id', adminAuth, async (req, res) => {
     if (!title || !content || !author_name) {
       return res.status(400).json({ error: 'Missing title, content, or author_name' });
     }
-    const data = await sql.query(
+    const { rows: data } = await sql.query(
       'UPDATE articles SET title = $1, content = $2, author_name = $3, modified_date = CURRENT_TIMESTAMP WHERE id = $4 RETURNING *',
       [title, content, author_name, id]
     );
@@ -195,7 +195,7 @@ app.put('/api/articles/:id', adminAuth, async (req, res) => {
 app.delete('/api/articles/:id', adminAuth, async (req, res) => {
   try {
     const { id } = req.params;
-    const data = await sql.query('DELETE FROM articles WHERE id = $1 RETURNING *', [id]);
+    const { rows: data } = await sql.query('DELETE FROM articles WHERE id = $1 RETURNING *', [id]);
     if (data.length === 0) {
       return res.status(404).json({ error: 'Article not found' });
     }
