@@ -5,7 +5,8 @@ certifi
 click
 diskcache
 Django
-faiss-cpu
+pgvector
+psycopg2-binary
 filelock
 fsspec
 h11
