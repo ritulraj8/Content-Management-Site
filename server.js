@@ -1,7 +1,7 @@
 import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
-import { neon } from '@neondatabase/serverless';
+import { Pool } from '@neondatabase/serverless';
 import crypto from 'crypto';
 import path from 'path';
 import { fileURLToPath } from 'url';
@@ -24,7 +24,7 @@ if (!process.env.DATABASE_URL) {
   process.exit(1);
 }
 
-const sql = neon(process.env.DATABASE_URL);
+const sql = new Pool({ connectionString: process.env.DATABASE_URL });
 
 app.use(cors());
 app.use(express.json());
