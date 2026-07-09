@@ -5,7 +5,9 @@ import ArticleView from './components/ArticleView';
 import AdminLogin from './components/AdminLogin';
 import ArticleEditor from './components/ArticleEditor';
 import FaqSection, { bustFaqCache } from './components/FaqSection';
-import { Sparkles, X, Plus, Loader2, Edit2, Trash2, ArrowRight } from 'lucide-react';
+import ChatModal from './components/ChatModal';
+import ChatPage from './components/ChatPage';
+import { Sparkles, X, Plus, Loader2, Edit2, Trash2, ArrowRight, MessageCircle } from 'lucide-react';
 import './App.css';
 
 function App() {
@@ -18,6 +20,7 @@ function App() {
   const [editingArticle, setEditingArticle] = useState(null);
 
   const [searchQuery, setSearchQuery] = useState('');
+  const [isChatOpen, setIsChatOpen] = useState(false);
 
   const [darkMode, setDarkMode] = useState(() => {
     const saved = localStorage.getItem('artisite_dark_mode');
@@ -177,6 +180,11 @@ function App() {
         isAdmin={isAdmin}
         onAdminLoginClick={handleAdminLoginClick}
         onAdminLogout={handleAdminLogout}
+        onChatPageClick={() => {
+          setView('chat-page');
+          setActiveArticle(null);
+          setEditingArticle(null);
+        }}
       />
 
       <main className="mx-auto max-w-7xl px-6 py-8 md:px-12 md:py-12">
@@ -232,6 +240,9 @@ function App() {
             onEditClick={handleEditClick}
             onDeleteClick={handleDeleteArticle}
           />
+        ) : view === 'chat-page' ? (
+          // Full Page Chat
+          <ChatPage />
         ) : (
           // Explore View (Grid of articles from database)
           <div className="space-y-12 animate-fadeIn">
@@ -366,9 +377,21 @@ function App() {
       </main>
 
       {/* Render FAQ section only when viewing catalog home */}
-      {view !== 'admin-login' && view !== 'admin-edit' && view !== 'article-detail' && (
+      {view !== 'admin-login' && view !== 'admin-edit' && view !== 'article-detail' && view !== 'chat-page' && (
         <FaqSection />
       )}
+
+      {/* Floating Chat Button */}
+      <button
+        onClick={() => setIsChatOpen(!isChatOpen)}
+        className="fixed bottom-6 right-6 z-50 flex h-14 w-14 items-center justify-center rounded-full bg-editorial-gold text-white shadow-lg hover:scale-105 hover:bg-editorial-gold/90 focus:outline-none transition-all duration-300"
+        aria-label="Toggle chat"
+      >
+        <MessageCircle className="h-6 w-6" />
+      </button>
+
+      {/* Chat Modal */}
+      <ChatModal isOpen={isChatOpen} onClose={() => setIsChatOpen(false)} />
     </div>
   );
 }

@@ -6,7 +6,7 @@ import { ChevronDown, HelpCircle, Loader2, AlertCircle, RefreshCw } from 'lucide
 // Persists across component remounts, React StrictMode double-invocations,
 // and Vite HMR updates (within the same browser tab).
 // ---------------------------------------------------------------------------
-let _cache   = null;   // null = not fetched yet; [] or [...] = fetched result
+let _cache = null;   // null = not fetched yet; [] or [...] = fetched result
 let _promise = null;   // deduplicates concurrent mount calls
 
 export function bustFaqCache() {
@@ -19,10 +19,10 @@ export function bustFaqCache() {
 
 function loadFaqs(force = false) {
   if (!force && _cache !== null) return Promise.resolve(_cache);
-  if (!force && _promise)        return _promise;
+  if (!force && _promise) return _promise;
 
   // Clear stale state before fresh fetch
-  _cache   = null;
+  _cache = null;
   _promise = fetch('/python-api/faqs/generate/')
     .then(res => {
       if (!res.ok) {
@@ -33,7 +33,7 @@ function loadFaqs(force = false) {
       return res.json();
     })
     .then(data => {
-      _cache   = Array.isArray(data) ? data : [];
+      _cache = Array.isArray(data) ? data : [];
       _promise = null;
       return _cache;
     })
@@ -50,10 +50,10 @@ function loadFaqs(force = false) {
 // ---------------------------------------------------------------------------
 export default function FaqSection() {
   // Initialise from cache so there's no flicker on re-mount
-  const [faqData,     setFaqData]     = useState(_cache || []);
-  const [loading,     setLoading]     = useState(_cache === null);
-  const [error,       setError]       = useState('');
-  const [openKey,     setOpenKey]     = useState(null);
+  const [faqData, setFaqData] = useState(_cache || []);
+  const [loading, setLoading] = useState(_cache === null);
+  const [error, setError] = useState('');
+  const [openKey, setOpenKey] = useState(null);
   const [openArticle, setOpenArticle] = useState(0);
 
   // -------------------------------------------------------------------------
@@ -95,7 +95,7 @@ export default function FaqSection() {
   // Manual retry — clears module cache and re-fetches
   // -------------------------------------------------------------------------
   const handleRetry = () => {
-    _cache   = null;
+    _cache = null;
     _promise = null;
     setError('');
     setLoading(true);
@@ -125,7 +125,7 @@ export default function FaqSection() {
   // Helpers
   // -------------------------------------------------------------------------
   const toggleArticle = (idx) => setOpenArticle(openArticle === idx ? null : idx);
-  const toggleFaq     = (key) => setOpenKey(openKey === key ? null : key);
+  const toggleFaq = (key) => setOpenKey(openKey === key ? null : key);
 
   // -------------------------------------------------------------------------
   // Render
@@ -145,9 +145,6 @@ export default function FaqSection() {
           <h2 className="font-serif text-3xl md:text-4xl font-bold text-editorial-ink dark:text-neutral-100">
             Frequently Asked Questions
           </h2>
-          <p className="text-neutral-500 mt-2 max-w-md mx-auto text-sm dark:text-neutral-400">
-            AI-generated FAQs based on our published articles, always up to date.
-          </p>
         </div>
 
         {/* ---------- Loading State ---------- */}
@@ -160,10 +157,9 @@ export default function FaqSection() {
             </div>
             <div className="text-center space-y-1">
               <p className="font-serif text-sm font-semibold text-neutral-700 dark:text-neutral-300">
-                Generating FAQs with AI…
+                Generating FAQs …
               </p>
               <p className="text-xs text-neutral-400 dark:text-neutral-500 max-w-xs">
-                Our local language model is reading your articles and crafting questions.
                 This may take a moment on first load.
               </p>
             </div>
@@ -232,13 +228,9 @@ export default function FaqSection() {
                       </span>
                     </div>
                     <div className="flex items-center gap-2 flex-shrink-0 ml-3">
-                      <span className="hidden sm:inline-flex text-[10px] font-semibold text-neutral-400 dark:text-neutral-500 bg-neutral-100 dark:bg-neutral-800 px-2 py-0.5 rounded-full">
-                        {faqs.length} FAQ{faqs.length !== 1 ? 's' : ''}
-                      </span>
                       <ChevronDown
-                        className={`h-4 w-4 text-neutral-400 dark:text-neutral-500 transition-transform duration-300 ${
-                          isArticleOpen ? 'rotate-180 text-editorial-gold' : ''
-                        }`}
+                        className={`h-4 w-4 text-neutral-400 dark:text-neutral-500 transition-transform duration-300 ${isArticleOpen ? 'rotate-180 text-editorial-gold' : ''
+                          }`}
                       />
                     </div>
                   </button>
@@ -252,7 +244,7 @@ export default function FaqSection() {
                         </p>
                       ) : (
                         faqs.map((faq, faqIdx) => {
-                          const key    = `${articleIdx}-${faqIdx}`;
+                          const key = `${articleIdx}-${faqIdx}`;
                           const isOpen = openKey === key;
                           return (
                             <div key={faqIdx}>
@@ -266,9 +258,8 @@ export default function FaqSection() {
                                   {faq.question}
                                 </span>
                                 <ChevronDown
-                                  className={`h-3.5 w-3.5 flex-shrink-0 text-neutral-400 dark:text-neutral-500 transition-transform duration-300 ${
-                                    isOpen ? 'rotate-180 text-editorial-gold' : ''
-                                  }`}
+                                  className={`h-3.5 w-3.5 flex-shrink-0 text-neutral-400 dark:text-neutral-500 transition-transform duration-300 ${isOpen ? 'rotate-180 text-editorial-gold' : ''
+                                    }`}
                                 />
                               </button>
                               <div className={`faq-content ${isOpen ? 'open border-t border-neutral-100/60 dark:border-neutral-800/40' : ''}`}>

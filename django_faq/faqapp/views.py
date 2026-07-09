@@ -25,6 +25,8 @@ import threading
 
 from django.http import JsonResponse
 from django.views import View
+from django.views.decorators.csrf import csrf_exempt
+from django.utils.decorators import method_decorator
 
 from .models import ArticleFAQCache
 
@@ -224,3 +226,49 @@ class GenerateFAQsView(View):
             })
 
         return JsonResponse(result, safe=False)
+
+# ---------------------------------------------------------------------------
+# Chat View
+# ---------------------------------------------------------------------------
+
+@method_decorator(csrf_exempt, name='dispatch')
+class ChatView(View):
+    """
+    POST /faqs/chat/
+    Receives {"question": "..."}
+    Returns {"answer": "..."}
+    """
+    _llm = None
+    _embedding_model = None
+
+    @classmethod
+    def _initialize_models_and_db(cls):
+        import chatbot
+        if cls._llm is None:
+            logger.info("Loading LLM for Chat...")
+            cls._llm = chatbot.load_llm()
+        if cls._embedding_model is None:
+            logger.info("Loading Embedding model for Chat...")
+            cls._embedding_model = chatbot.load_embedding_model()
+            
+        # Sync articles to DB
+        try:
+            chatbot.sync_embeddings_to_db(cls._embedding_model)
+        except Exception as e:
+            logger.error("Failed to sync embeddings: %s", e)
+
+    def post(self, request):
+        import chatbot
+        try:
+            data = json.loads(request.body)
+            question = data.get('question', '')
+            if not question:
+                return JsonResponse({"error": "No question provided"}, status=400)
+            
+            self._initialize_models_and_db()
+            
+            answer = chatbot.ask_llama(question, self._embedding_model, self._llm)
+            return JsonResponse({"answer": answer})
+        except Exception as e:
+            logger.error("Chat error: %s", e)
+            return JsonResponse({"error": str(e)}, status=500)

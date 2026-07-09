@@ -1,5 +1,5 @@
 import React from 'react';
-import { Search, Moon, Sun, Compass, BookOpen } from 'lucide-react';
+import { Search, Moon, Sun, Compass, BookOpen, MessageCircle } from 'lucide-react';
 
 export default function Header({
   searchQuery,
@@ -10,7 +10,8 @@ export default function Header({
   toggleDarkMode,
   isAdmin,
   onAdminLoginClick,
-  onAdminLogout
+  onAdminLogout,
+  onChatPageClick
 }) {
   return (
     <header className="sticky top-0 z-50 w-full border-b border-neutral-200/50 bg-editorial-cream/80 backdrop-blur-md transition-colors duration-300 dark:border-neutral-800/50 dark:bg-editorial-bg-dark/80">
@@ -83,6 +84,14 @@ export default function Header({
             >
               FAQ
             </a>
+
+            <button
+              onClick={onChatPageClick}
+              className="flex items-center gap-1.5 text-sm font-medium text-neutral-500 hover:text-editorial-ink dark:text-neutral-400 dark:hover:text-neutral-200 transition-colors focus:outline-none cursor-pointer"
+            >
+              <MessageCircle className="h-4 w-4" />
+              <span className="hidden md:inline">Chat</span>
+            </button>
           </nav>
 
           <span className="h-5 w-px bg-neutral-200 dark:bg-neutral-800"></span>
