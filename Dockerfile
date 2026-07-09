@@ -1,8 +1,8 @@
 # Use Python 3.11 slim as the base image
 FROM python:3.11-slim
 
-# Install system dependencies and Node.js (v20)
-RUN apt-get update && apt-get install -y curl \
+# Install system dependencies (build-essential/cmake for llama-cpp-python) and Node.js (v20)
+RUN apt-get update && apt-get install -y curl build-essential cmake \
     && curl -fsSL https://deb.nodesource.com/setup_20.x | bash - \
     && apt-get install -y nodejs \
     && apt-get clean \
