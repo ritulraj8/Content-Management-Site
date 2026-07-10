@@ -9,13 +9,13 @@ export default defineConfig({
     proxy: {
       // Node/Express API (articles, auth)
       '/api': {
-        target: 'http://localhost:3001',
+        target: 'http://127.0.0.1:3001',
         changeOrigin: true,
         secure: false,
       },
       // Django Python API (LLM-powered FAQ generation)
       '/python-api': {
-        target: 'http://localhost:8000',
+        target: 'http://127.0.0.1:8000',
         changeOrigin: true,
         secure: false,
         rewrite: (path) => path.replace(/^\/python-api/, ''),
